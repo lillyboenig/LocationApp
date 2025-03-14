@@ -1,3 +1,4 @@
+// App.js
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -13,14 +14,53 @@ import { LocationProvider } from './context/LocationContext';
 
 const Stack = createStackNavigator();
 
-const AppNavigator = () => {
+const AppNavigator = ({ isLoggedIn }) => {
+  return (
+    <Stack.Navigator>
+      {isLoggedIn ? (
+        <>
+          <Stack.Screen
+            name="LocationsList"
+            component={LocationsListScreen}
+            options={{ title: 'Locations' }}
+          />
+          <Stack.Screen
+            name="AddLocation"
+            component={AddLocationScreen}
+            options={{ title: 'Add Location' }}
+          />
+          <Stack.Screen
+            name="Map"
+            component={MapScreen}
+            options={{ title: 'Map' }}
+          />
+          <Stack.Screen
+            name="Countries"
+            component={CountriesScreen}
+            options={{ title: 'Countries' }}
+          />
+        </>
+      ) : (
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+      )}
+    </Stack.Navigator>
+  );
+};
+
+export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
+  // Check login state from AsyncStorage
+  const checkLogin = async () => {
+    const userData = await AsyncStorage.getItem('user');
+    setIsLoggedIn(!!userData);
+  };
+
   useEffect(() => {
-    const checkLogin = async () => {
-      const userData = await AsyncStorage.getItem('user');
-      setIsLoggedIn(!!userData);
-    };
     checkLogin();
   }, []);
 
@@ -29,26 +69,14 @@ const AppNavigator = () => {
   }
 
   return (
-    <Stack.Navigator>
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen name="LocationsList" component={LocationsListScreen} options={{ title: 'Locations' }} />
-          <Stack.Screen name="AddLocation" component={AddLocationScreen} options={{ title: 'Add Location' }} />
-          <Stack.Screen name="Map" component={MapScreen} options={{ title: 'Map' }} />
-          <Stack.Screen name="Countries" component={CountriesScreen} options={{ title: 'Countries' }} />
-        </>
-      ) : (
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      )}
-    </Stack.Navigator>
-  );
-};
-
-export default function App() {
-  return (
     <LocationProvider>
-      <NavigationContainer>
-        <AppNavigator />
+      <NavigationContainer
+        // Every time the navigation state changes, re-check login state.
+        onStateChange={() => {
+          checkLogin();
+        }}
+      >
+        <AppNavigator isLoggedIn={isLoggedIn} />
       </NavigationContainer>
     </LocationProvider>
   );
