@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-
+    // Using hardcoded credentials for demo purposes.
     if (email === 'user@example.com' && password === 'password') {
+      // Save the user to AsyncStorage.
       await AsyncStorage.setItem('user', JSON.stringify({ email }));
-      navigation.replace('LocationsList');
+      // No manual navigation call.
+      // The AppNavigator's useEffect will detect the login state change and render the main screens.
     } else {
       alert('Invalid credentials');
     }
