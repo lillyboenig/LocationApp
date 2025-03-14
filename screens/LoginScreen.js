@@ -18,12 +18,8 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    // Using hardcoded credentials for demo purposes.
     if (email === 'user@example.com' && password === 'password') {
-      // Save the user to AsyncStorage.
       await AsyncStorage.setItem('user', JSON.stringify({ email }));
-      // No manual navigation call here!
-      // Your top-level navigator should observe AsyncStorage changes and render the correct screen.
     } else {
       alert('Invalid credentials');
     }

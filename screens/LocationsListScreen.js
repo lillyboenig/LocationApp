@@ -34,8 +34,6 @@ const LocationsListScreen = ({ navigation }) => {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('user');
-    // When the user logs out, the conditional navigator (or onStateChange in App.js)
-    // will update the displayed screen.
   };
 
   const renderStars = (rating) => {
